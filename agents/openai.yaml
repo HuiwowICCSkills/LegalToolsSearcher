@@ -1,0 +1,4 @@
+interface:
+  display_name: "ICC Legal Tools 判例检索"
+  short_description: "检索 ICC Legal Tools 目录、按官方文书编号定位并下载 PDF 提取全文"
+  default_prompt: "使用 $legal-tools-searcher 检索 ICC Legal Tools，分别报告目录元数据、命中总数、权限状态，以及 fetch 后 PDF 的 slug、页数、哈希和是否需要 OCR。"
