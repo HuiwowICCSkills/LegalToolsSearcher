@@ -11,7 +11,7 @@ description: 独立检索 ICC Legal Tools Database（legal-tools.org），支持
 
 - `search`：调用公开 JSON API 检索索引元数据和文书正文索引，返回题名、官方编号、案件号、案件名、法院/机构、文书类型、日期、页数、语言标记、权限字段、索引 highlight 和稳定链接；
 - `document`：按官方文书编号（`externalId`）精确调用 `findOne`，先确认目录记录、slug、PDF 链接和权限字段，不下载全文；
-- `fetch`：按 `/doc/<slug>/` URL、六位 slug 或官方文书编号下载 PDF，提取逐页文本，可另存 PDF 与带 `@@PAGE n@@` 页码标记的纯文本；
+- `fetch`：按 `/doc/<slug>/` URL、字母数字 slug 或官方文书编号下载 PDF，提取逐页文本，可另存 PDF 与带 `@@PAGE n@@` 页码标记的纯文本；
 - `doctor`：检查 Python、PDF 文本后端、Legal Tools 检索 API 和 PDF 路由。
 
 Legal Tools 是公开匿名来源，不需要广外 VPN、`gdufs-auth-session`、浏览器、Cookie 或 API key。

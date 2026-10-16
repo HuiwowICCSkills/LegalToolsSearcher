@@ -273,7 +273,7 @@ class DocumentTests(unittest.TestCase):
 
 
 class LocatorTests(unittest.TestCase):
-    def test_url_and_bare_slug(self):
+    def test_url_and_bare_slugs(self):
         self.assertEqual(
             adapter.slug_from_locator(
                 'https://www.legal-tools.org/doc/ecfae0/pdf/'
@@ -281,11 +281,14 @@ class LocatorTests(unittest.TestCase):
             'ecfae0',
         )
         self.assertEqual(adapter.slug_from_locator('ECFAE0'), 'ecfae0')
+        self.assertEqual(adapter.slug_from_locator('gzhssuxk'), 'gzhssuxk')
+        self.assertEqual(adapter.slug_from_locator('GZHSSUXK'), 'gzhssuxk')
 
     def test_external_id_is_not_treated_as_a_slug(self):
         self.assertEqual(
             adapter.slug_from_locator('ICC-01/04-01/12-1-Red'), ''
         )
+        self.assertEqual(adapter.slug_from_locator('zzz-nonexistent'), '')
 
     def test_foreign_host_is_rejected(self):
         with self.assertRaisesRegex(adapter.RetrievalError, 'Not a Legal Tools URL'):
@@ -323,14 +326,14 @@ class FetchTests(unittest.TestCase):
         self.assertEqual(out['pages'][0]['text'], 'Paragraph 1.')
         self.assertEqual(len(out['evidence']), 2)
 
-    def test_fetch_by_slug_writes_pdf_and_page_marked_text(self):
+    def test_fetch_by_alphanumeric_slug_writes_pdf_and_page_marked_text(self):
         pdf = b'%PDF-1.3\nfixture'
         http = FakeHttp(
             {
-                'https://www.legal-tools.org/doc/ecfae0/pdf/': response(
+                'https://www.legal-tools.org/doc/gzhssuxk/pdf/': response(
                     pdf,
                     headers={'Content-Type': 'application/pdf'},
-                    url='https://www.legal-tools.org/doc/ecfae0/pdf/',
+                    url='https://www.legal-tools.org/doc/gzhssuxk/pdf/',
                 )
             }
         )
@@ -343,7 +346,7 @@ class FetchTests(unittest.TestCase):
                 return_value=[{'page': 1, 'text': 'First page.'}],
             ):
                 out = adapter.fetch(
-                    'ecfae0',
+                    'gzhssuxk',
                     http=http,
                     pdf_out=str(pdf_path),
                     text_out=str(text_path),

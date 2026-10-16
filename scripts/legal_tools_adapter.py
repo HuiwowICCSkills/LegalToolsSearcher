@@ -45,7 +45,8 @@ UA = (
 DEFAULT_MAX_BYTES = 250 * 1024 * 1024
 JSON_MAX_BYTES = 40 * 1024 * 1024
 TAG_RE = re.compile(r'<[^>]+>')
-SLUG_RE = re.compile(r'^[0-9a-fA-F]{6}$')
+SLUG_RE = re.compile(r'^[A-Za-z0-9_-]{2,64}$')
+BARE_SLUG_RE = re.compile(r'^[A-Za-z0-9]{2,64}$')
 
 ORGANISATIONS = {
     'icc': 'International Criminal Court (ICC)',
@@ -557,11 +558,11 @@ def slug_from_locator(locator: str) -> str:
                 f'Legal Tools document URL must look like /doc/<slug>/: {locator}'
             )
         slug = parts[1]
-    elif SLUG_RE.fullmatch(locator):
+    elif BARE_SLUG_RE.fullmatch(locator):
         slug = locator
     else:
         return ''
-    if not re.fullmatch(r'[A-Za-z0-9_-]{2,64}', slug):
+    if not SLUG_RE.fullmatch(slug):
         raise RetrievalError(f'Invalid Legal Tools document slug: {slug}')
     return slug.lower()
 
@@ -614,8 +615,8 @@ def fetch(
 ) -> dict[str, Any]:
     """Download and extract one Legal Tools PDF.
 
-    ``locator`` may be a ``/doc/<slug>/`` URL, a bare six-character slug, or
-    an official document number (``externalId``).
+    ``locator`` may be a ``/doc/<slug>/`` URL, a bare alphanumeric slug, or an
+    official document number (``externalId``).
     """
     if max_bytes < 1:
         raise ValueError('max_bytes must be positive')

@@ -102,7 +102,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     fetch.add_argument(
         'locator',
-        help='Six-character slug, /doc/<slug>/ URL, or official document number',
+        help='Alphanumeric slug, /doc/<slug>/ URL, or official document number',
     )
     fetch.add_argument('--pdf-out', help='Also write the retrieved PDF here')
     fetch.add_argument('--text-out', help='Also write page-marked plain text here')
