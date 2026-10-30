@@ -55,6 +55,7 @@ Legal Tools 是公开匿名来源，不需要广外 VPN、`gdufs-auth-session`�
 
 - Legal Tools 的 `term` 由远端搜索服务解释。多词查询不一定等于精确短语；实测 `Mudacumura confirmation of charges` 的 `total` 很宽，但前两条是目标记录。需要确定性定位时使用 `document '<官方编号>'`，或至少加 `--case-number` / `--document-type`。
 - `results[].snippet` 来自 `highlight`，用于定位，不能代替原文引用。引用段落时使用 `fetch` 返回的页文本和真实 PDF 页码。
+- 找不到高位阶直接判例时，应围绕同一规则、条文、事实模式、程序异议和相关案件号继续检索。先用书状或程序记录确认争点已提交，再读取裁判全文判断处理状态；若争点确已进入裁判视野但分庭未支持也未否定，可列为“明示未决”“以其他理由回避”或“仅提及未处理”，同时说明提出位置、最终处理及未裁判原因。这是检索线索，不是支持性权威；snippet 不足，不能证明争点曾被提出也不能据此推定 ICC 留有空间。
 - `total=0` 且 `status=ok` 是已确认零命中；HTTP 403/404/5xx、schema 变化和 40 MiB JSON 上限都是检索错误，不能改写成“没有资料”。
 - `document` 的 `status=not-found` 表示该 `externalId` 没有精确目录记录；不排除同一文书的其他编号、语言版本或上级卷宗存在。
 - PDF 下载失败、非 PDF 响应或超过 `--max-mb` 都保留为 `status=error`。不绕过权限、验证码或访问控制；`download_permission_required=true` 只作为元数据报告。
