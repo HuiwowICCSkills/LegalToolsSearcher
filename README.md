@@ -2,7 +2,7 @@
 
 独立的 ICC Legal Tools Database 检索 skill：目录检索、官方文书编号定位、PDF 下载和逐页文本提取。Legal Tools 是公开匿名来源，本 skill 不需要广外登录、浏览器、Cookie 或 API key。
 
-仓库：<https://github.com/GDUFSICCSkills/LegalToolsSearcher>（若为私有仓库，需要组织成员权限或对私仓有读权限的令牌/部署密钥）。
+仓库：<https://github.com/HuiwowICCSkills/LegalToolsSearcher>（若为私有仓库，需要组织成员权限或对私仓有读权限的令牌/部署密钥）。
 
 ## 1. 运行环境
 
@@ -18,7 +18,7 @@
 ## 2. 安装
 
 ```powershell
-git clone https://github.com/GDUFSICCSkills/LegalToolsSearcher.git "$env:USERPROFILE\.codex\skills\LegalToolsSearcher"
+git clone https://github.com/HuiwowICCSkills/LegalToolsSearcher.git "$env:USERPROFILE\.codex\skills\LegalToolsSearcher"
 python -m pip install -r "$env:USERPROFILE\.codex\skills\LegalToolsSearcher\requirements.txt"
 ```
 
