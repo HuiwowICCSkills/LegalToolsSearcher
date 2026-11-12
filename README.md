@@ -98,21 +98,23 @@ git -C "$env:USERPROFILE\.codex\skills\LegalToolsSearcher" pull
 
 本 skill 独立于 `gdufs-auth-session`、`HeinOnlineSearcher` 和 `EJILTalkSearcher`，不依赖同组织其它仓库。
 
-## 实测效果（2026-11-09）
+## 实测效果（2026-11-12）
 
-以下命令与结果来自本机 `~/.codex/skills/LegalToolsSearcher` 的实网运行；检索日期 2026-11-09（Asia/Shanghai），输出为该次运行实际返回的 JSON 报告。
+以下命令与结果来自本机 `~/.codex/skills/LegalToolsSearcher` 的实网运行；检索日期 2026-11-12（Asia/Shanghai），输出为该次运行实际返回的 JSON 报告。
 
 ```powershell
-& .\run.ps1 search 'command responsibility' --limit 5
+$ltd = "$env:USERPROFILE\.codex\skills\LegalToolsSearcher\run.ps1"
+& $ltd search 'command responsibility' --match phrase --limit 5
 ```
 
-- 状态：`ok`；索引报告 `total = 46657`；本次返回 5 条。
+- 状态：`ok`；`total = 3396`；本次返回 5 条。
+- 查询表达式：`"command responsibility"`（精确短语）；`query_expression` 已回显在 JSON 中。
 - 代表性结果：
 
-| 题名 | 类型 / 日期 | 链接 |
-| --- | --- | --- |
-| Motion in limine regarding mens rea required for charges alleging command responsibility and for bill of particulars re: Command responsibility portions of indictment | submission；1997-12-04T00:00:00.000Z | https://www.legal-tools.org/doc/qlz4gq97/ |
-| Motion in limine regarding Mens Rea required for charges alleging command responsibility and for bill of particulars re: command responsibility portions of indictment | submission；1997-12-11T00:00:00.000Z | https://www.legal-tools.org/doc/ch4pkrth/ |
-| International Criminal Law Guidelines: Command Responsibility (2nd edition) | publications；2016-11-30T00:00:00.000Z | https://www.legal-tools.org/doc/367a2d/ |
+| 题名 | 案件 / 机构 | 类型 / 日期 | 链接 |
+| --- | --- | --- | --- |
+| Motion in limine regarding mens rea required for charges alleging command responsibility and for bill of particulars re: Command responsibility portions of indictment | The Prosecutor v. Dario Kordić and Mario Čerkez / ICTY | submission；1997-12-04 | https://www.legal-tools.org/doc/qlz4gq97/ |
+| Momcilo Perisic's motion to strike portions of the indictment alleging command responsibility | The Prosecutor v. Momčilo Perišić / ICTY | submission；2005-06-02 | https://www.legal-tools.org/doc/2q7n3mda/ |
+| Reply - Defence preliminary motion based on lack of jurisdiction: command responsibility | The Prosecutor v. Sam Hinga Norman / SCSL | submission；2003-07-14 | https://www.legal-tools.org/doc/hye4k0ru/ |
 
-> 说明：`total = 46,657` 是匿名 Legal Tools 检索 API 在索引元数据与文书文本上的返回数。`scope` 说明多词与短语的匹配规则由远端 API 控制、本 skill 不做归一化，因此这个数字不是精确的短语/布尔命中数。结果只含目录元数据（案名、案号、`document_type`、日期、机构）与索引片段 `snippet`，`content_scope` 为 “search-index metadata and document-text highlight; not the full PDF”，`result_type = retrieved_metadata`；正文须按 `url` / `pdf_url` 另行取回 PDF 再抽取，不能把片段当作文书内容引用。
+> 说明：以上是 Legal Tools 的**索引元数据和 highlight**，不是 PDF 全文；`total=3396` 是远端搜索表达式命中的记录数。引用段落时必须用 `fetch` 下载 PDF 并核对真实页号。

@@ -372,6 +372,26 @@ def _evidence(response: Response) -> dict[str, Any]:
     }
 
 
+def build_term(query: str, match: str, near_distance: int = 5) -> str:
+    """Translate a friendly match mode into Legal Tools search syntax."""
+    text = str(query or '').strip()
+    if not text or match == 'raw':
+        return text
+    if match == 'phrase':
+        return '"' + text.replace('"', '\\"') + '"'
+    words = text.split()
+    if len(words) < 2:
+        return text
+    if match == 'all':
+        return ' AND '.join(words)
+    if match == 'any':
+        return ' OR '.join(words)
+    if match == 'near':
+        operator = f'NEAR/{near_distance}'
+        return f' {operator} '.join(words)
+    return text
+
+
 def search(
     query: str = '',
     limit: int = 10,
@@ -381,6 +401,8 @@ def search(
     case_number: str = '',
     document_type: str = '',
     where_json: str = '',
+    match: str = 'raw',
+    near_distance: int = 5,
     http: HttpClient | None = None,
     timeout: int = 60,
 ) -> dict[str, Any]:
@@ -389,6 +411,11 @@ def search(
         raise ValueError('limit must be between 1 and 50')
     if offset < 0:
         raise ValueError('offset must be >= 0')
+    if match not in ('raw', 'phrase', 'all', 'any', 'near'):
+        raise ValueError("match must be raw, phrase, all, any or near")
+    if near_distance < 1 or near_distance > 100:
+        raise ValueError('near-distance must be 1..100')
+    expression = build_term(query, match, near_distance)
 
     where = build_where(
         organisation=organisation,
@@ -398,7 +425,7 @@ def search(
     )
     filter_value = {'from': offset, 'limit': limit, 'where': where}
     client = http or HttpClient(timeout)
-    params = {'term': query, 'filter': _json_bytes(filter_value)}
+    params = {'term': expression, 'filter': _json_bytes(filter_value)}
     response = client.get(
         SEARCH_URL,
         params=params,
@@ -433,6 +460,8 @@ def search(
         'status': 'ok',
         'retrieved_at': now_utc(),
         'query': query,
+        'query_expression': expression,
+        'match': match,
         'filters': where,
         'total': total,
         'results': results,

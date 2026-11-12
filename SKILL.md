@@ -30,6 +30,10 @@ Legal Tools 是公开匿名来源，不需要广外 VPN、`gdufs-auth-session`�
 # 关键词检索；结果是元数据与 highlight，不是全文
 & '<skill-dir>/run.ps1' search 'command responsibility' --limit 10 --out './legal-tools-search.json'
 
+# 精确短语 / 全词 AND / 任一词 OR / NEAR 邻近检索
+& '<skill-dir>/run.ps1' search 'command responsibility' --match phrase --limit 10
+& '<skill-dir>/run.ps1' search 'command responsibility' --match near --near-distance 5 --limit 10
+
 # 用案件号、机构和文书类型收窄
 & '<skill-dir>/run.ps1' search 'effective control' --organisation icc --case-number 'ICC-01/04-01/06' --document-type judgement --limit 10
 
@@ -54,6 +58,7 @@ Legal Tools 是公开匿名来源，不需要广外 VPN、`gdufs-auth-session`�
 ## 检索行为与结果边界
 
 - Legal Tools 的 `term` 由远端搜索服务解释。多词查询不一定等于精确短语；实测 `Mudacumura confirmation of charges` 的 `total` 很宽，但前两条是目标记录。需要确定性定位时使用 `document '<官方编号>'`，或至少加 `--case-number` / `--document-type`。
+- `--match raw|phrase|all|any|near` 把用户输入转换成站点远端搜索语法：`phrase` 加引号，`all` 用 AND，`any` 用 OR，`near` 用 NEAR 或 NEAR/n；`query_expression` 会回显实际提交的表达式。实测 `command responsibility` 原文 46,657 条、精确短语 3,396 条、NEAR 52,705 条、NEAR/5 46,747 条，说明这些操作符确实被远端识别。
 - `results[].snippet` 来自 `highlight`，用于定位，不能代替原文引用。引用段落时使用 `fetch` 返回的页文本和真实 PDF 页码。
 - 找不到高位阶直接判例时，应围绕同一规则、条文、事实模式、程序异议和相关案件号继续检索。先用书状或程序记录确认争点已提交，再读取裁判全文判断处理状态；若争点确已进入裁判视野但分庭未支持也未否定，可列为“明示未决”“以其他理由回避”或“仅提及未处理”，同时说明提出位置、最终处理及未裁判原因。这是检索线索，不是支持性权威；snippet 不足，不能证明争点曾被提出也不能据此推定 ICC 留有空间。
 - `total=0` 且 `status=ok` 是已确认零命中；HTTP 403/404/5xx、schema 变化和 40 MiB JSON 上限都是检索错误，不能改写成“没有资料”。

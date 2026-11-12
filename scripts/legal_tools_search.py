@@ -80,6 +80,18 @@ def build_parser() -> argparse.ArgumentParser:
         default='',
         help='Additional JSON object merged into the API where filter',
     )
+    search.add_argument(
+        '--match',
+        choices=('raw', 'phrase', 'all', 'any', 'near'),
+        default='raw',
+        help='Query matching mode: raw syntax, exact phrase, all words, any words, or NEAR',
+    )
+    search.add_argument(
+        '--near-distance',
+        type=int,
+        default=5,
+        help='Word distance for --match near (1..100, default 5)',
+    )
     search.add_argument('--limit', type=int, default=10, help='1..50 (default 10)')
     search.add_argument('--offset', type=int, default=0, help='>= 0 (default 0)')
     search.add_argument('--timeout', type=int, default=60, help='1..1800 seconds')
@@ -170,6 +182,8 @@ def main(argv: list[str] | None = None) -> int:
                 case_number=args.case_number,
                 document_type=args.document_type,
                 where_json=args.where_json,
+                match=args.match,
+                near_distance=args.near_distance,
                 timeout=args.timeout,
             )
             _emit(

@@ -123,3 +123,18 @@ HEAD https://www.legal-tools.org/doc/ecfae0/pdf/
 - 未穷举 `where` 字段；只把实测字段写入 CLI。高级条件可通过 `--where-json` 传入，但返回结果仍需按记录核验。
 - 未把所有 PDF 实测为带文字层。扫描件会由 `pdf.needs_ocr` 标记。
 - 未测试或绕过任何需登录、需订阅或 `requireDownloadPermission=true` 的访问控制。
+
+## 8. 远端搜索操作符（2026-11-12 实测）
+
+Legal Tools 的搜索页有 `query1` / `operation` / `query2` / `proximity` 两词高级查询框；其 `term` 参数接受同一套操作符。逐项对 `command responsibility` 实测：
+
+| 表达式 | `total` |
+| --- | ---: |
+| `command responsibility` | 46,657 |
+| `"command responsibility"` | 3,396 |
+| `command AND responsibility` | 269,319 |
+| `command OR responsibility` | 139,345 |
+| `command NEAR responsibility` | 52,705 |
+| `command NEAR/5 responsibility` | 46,747 |
+
+`title:`、`caseNumber:`、`documentType:`、`organisation:` 等字段前缀不生效（均返回 0）；字段过滤必须走 `--organisation`、`--case-number`、`--document-type` 或 `--where-json`，不要写进 `term`。`--match` 只是对这些操作符的封装，不改变远端排序或相关性。
